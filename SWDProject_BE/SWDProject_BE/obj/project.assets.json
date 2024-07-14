@@ -12946,11 +12946,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\SU24\\SWD392\\Main\\SWD392_NET1701_GroupABC\\SWDProject_BE\\SWDProject_BE\\SWDProject_BE.csproj",
+      "projectUniqueName": "F:\\SU24\\SWD392\\Deploy_SWD392\\Deploy_SWD392\\SWDProject_BE\\SWDProject_BE\\SWDProject_BE.csproj",
       "projectName": "SWDProject_BE",
-      "projectPath": "F:\\SU24\\SWD392\\Main\\SWD392_NET1701_GroupABC\\SWDProject_BE\\SWDProject_BE\\SWDProject_BE.csproj",
+      "projectPath": "F:\\SU24\\SWD392\\Deploy_SWD392\\Deploy_SWD392\\SWDProject_BE\\SWDProject_BE\\SWDProject_BE.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "F:\\SU24\\SWD392\\Main\\SWD392_NET1701_GroupABC\\SWDProject_BE\\SWDProject_BE\\obj\\",
+      "outputPath": "F:\\SU24\\SWD392\\Deploy_SWD392\\Deploy_SWD392\\SWDProject_BE\\SWDProject_BE\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -12972,11 +12972,11 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "F:\\SU24\\SWD392\\Main\\SWD392_NET1701_GroupABC\\SWDProject_BE\\BusinessLayer\\BusinessLayer.csproj": {
-              "projectPath": "F:\\SU24\\SWD392\\Main\\SWD392_NET1701_GroupABC\\SWDProject_BE\\BusinessLayer\\BusinessLayer.csproj"
+            "F:\\SU24\\SWD392\\Deploy_SWD392\\Deploy_SWD392\\SWDProject_BE\\BusinessLayer\\BusinessLayer.csproj": {
+              "projectPath": "F:\\SU24\\SWD392\\Deploy_SWD392\\Deploy_SWD392\\SWDProject_BE\\BusinessLayer\\BusinessLayer.csproj"
             },
-            "F:\\SU24\\SWD392\\Main\\SWD392_NET1701_GroupABC\\SWDProject_BE\\DataLayer\\DataLayer.csproj": {
-              "projectPath": "F:\\SU24\\SWD392\\Main\\SWD392_NET1701_GroupABC\\SWDProject_BE\\DataLayer\\DataLayer.csproj"
+            "F:\\SU24\\SWD392\\Deploy_SWD392\\Deploy_SWD392\\SWDProject_BE\\DataLayer\\DataLayer.csproj": {
+              "projectPath": "F:\\SU24\\SWD392\\Deploy_SWD392\\Deploy_SWD392\\SWDProject_BE\\DataLayer\\DataLayer.csproj"
             }
           }
         }
