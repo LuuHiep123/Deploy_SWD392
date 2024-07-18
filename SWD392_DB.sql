@@ -1,0 +1,335 @@
+USE [master]
+GO
+
+IF DB_ID('SWD392_DB') IS NOT NULL
+BEGIN
+    --DROP DATABASE [SWD392_DB]
+	ALTER DATABASE [SWD392_DB] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+	DROP DATABASE [SWD392_DB];
+END
+GO
+CREATE DATABASE [SWD392_DB]
+GO
+
+USE [SWD392_DB]
+GO
+
+CREATE TABLE [Role] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [Name] NVARCHAR(50) NOT NULL,
+    [Status] BIT NOT NULL,
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [User] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    UserName NVARCHAR(50) NOT NULL,
+    [Password] NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100) NOT NULL,
+    DOB DATE NOT NULL,
+    [Address] NVARCHAR(100) NOT NULL,
+    Phone_Number NVARCHAR(50) NOT NULL,
+    [Role_Id] INT NOT NULL,
+    [Gender] NVARCHAR(50) NOT NULL,
+    [ImgURL] NVARCHAR(MAX) NOT NULL,
+    Created_Date DATE NOT NULL,
+    Modified_Date DATE NULL,
+    [Rating_Count] INT NULL,
+    [Status] BIT NOT NULL,
+FOREIGN KEY (Role_Id) REFERENCES [Role]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Token] 
+(
+    [Id] INT IDENTITY(1,1) NOT NULL,
+    [Value] NVARCHAR(MAX) NOT NULL,
+    [User_Id] INT NOT NULL,
+    [Expiration] DATETIME NOT NULL, 
+FOREIGN KEY ([User_Id]) REFERENCES [User]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Payment] 
+(
+    [Id] INT IDENTITY(1,1) NOT NULL,
+    [Date] NVARCHAR(MAX) NOT NULL,
+    [Amount] FLOAT NOT NULL,
+    [Method] NVARCHAR(50) NOT NULL, 
+    [Description] NVARCHAR(MAX) NULL, 
+    [Status] BIT NOT NULL, 
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [BannedAccount] 
+(
+    [Id] INT IDENTITY(1,1) NOT NULL,
+    [User_Id] INT NOT NULL,
+    [Description] NVARCHAR(Max) NOT NULL,
+    [Date] DATETIME NOT NULL,
+    [Modified_Date] DATETIME NULL,
+    [Status] BIT NOT NULL,
+FOREIGN KEY ([User_Id]) REFERENCES [User]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Appeal] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [User_Id] INT NOT NULL,
+    [BannerAcount_Id] INT NOT NULL,
+    [Description] NVARCHAR(Max) NOT NULL,
+    [Date] DATETIME NOT NULL,
+    [Modified_Date] DATETIME NULL,
+    [Status] BIT NOT NULL,
+FOREIGN KEY ([User_Id]) REFERENCES [User]([Id]),
+FOREIGN KEY ([BannerAcount_Id]) REFERENCES [BannedAccount]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Category] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [Name] NVARCHAR(100) NOT NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    [Status] BIT NOT NULL, 
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [SubCategory] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [Category_Id] INT NOT NULL,
+    [Name] NVARCHAR(100) NOT NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    [Status] BIT NOT NULL, 
+FOREIGN KEY ([Category_Id]) REFERENCES [Category]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Product] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [User_Id] INT NOT NULL,
+    [Category_Id] INT NOT NULL,
+    [SubCategory_Id] INT NOT NULL,
+    [Name] NVARCHAR(100) NOT NULL,
+    [Price] FLOAT NOT NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    [Location] NVARCHAR(100) NULL,
+    [Url_IMG] NVARCHAR(MAX) NULL, 
+    [Status] BIT NOT NULL, 
+    [IsForSell] BIT NOT NULL, 
+FOREIGN KEY ([SubCategory_Id]) REFERENCES [SubCategory] ([Id]),
+FOREIGN KEY ([User_Id]) REFERENCES [User] ([Id]),
+FOREIGN KEY ([Category_Id]) REFERENCES [Category]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Post] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [User_Id] INT NOT NULL,
+    [Product_Id] INT NOT NULL,
+    [Title] NVARCHAR(100) NOT NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    [Date] DATE NOT NULL,
+    [ImageUrl] NVARCHAR(MAX) NULL,
+    [PublicStatus] BIT NULL,
+    [ExchangedStatus] BIT NULL,
+FOREIGN KEY ([User_Id]) REFERENCES [User] ([Id]),
+FOREIGN KEY ([Product_Id]) REFERENCES [Product]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+
+CREATE TABLE [Comment] 
+(
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [User_Id] INT NOT NULL,
+    [Post_Id] INT NOT NULL,
+    [Content] NVARCHAR(MAX) NOT NULL,
+    [Date] DATETIME,
+    [Status]  BIT NOT NULL,
+    FOREIGN KEY ([User_Id]) REFERENCES [User]([Id]),
+    FOREIGN KEY ([Post_Id]) REFERENCES [Post]([Id])
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Notification] 
+(
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [Receiver_Id] INT NOT NULL,
+    [Content] NVARCHAR(MAX) NOT NULL,
+    FOREIGN KEY ([Receiver_Id]) REFERENCES [User]([Id]),
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Report] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [User_Id] INT NOT NULL,
+    [Post_Id] INT NOT NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    [Date] DATE NOT NULL,
+    [Status] BIT NOT NULL,
+FOREIGN KEY ([User_Id]) REFERENCES [User] ([Id]),
+FOREIGN KEY ([Post_Id]) REFERENCES [Post]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Order] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [User_Id] INT NOT NULL,
+    [Payment_Id] INT NULL,
+    [Total_Price] FLOAT NULL,
+    [Date] DATE NOT NULL,
+    [Status] BIT NOT NULL,
+FOREIGN KEY ([User_Id]) REFERENCES [User] ([Id]),
+FOREIGN KEY ([Payment_Id]) REFERENCES [Payment]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [OrderDetails] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [Order_Id] INT NOT NULL,
+    [Product_Id] INT NOT NULL,
+    [Price] FLOAT NOT NULL,
+    [Status] BIT NOT NULL,
+FOREIGN KEY ([Product_Id]) REFERENCES [Product] ([Id]),
+FOREIGN KEY ([Order_Id]) REFERENCES [Order] ([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Exchanged] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [User_Id] INT NOT NULL,
+    [Post_Id] INT NOT NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    [DATE] DATETIME NOT NULL,
+    [Status] BIT NOT NULL, 
+	[StatusRating ] BIT NOT NULL, 
+FOREIGN KEY ([User_Id]) REFERENCES [User] ([Id]),
+FOREIGN KEY ([Post_Id]) REFERENCES [Post] ([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [ExchangedProduct] 
+(
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [ExchangeId] INT NOT NULL,
+    [ProductId] INT NOT NULL,
+    FOREIGN KEY ([ExchangeId]) REFERENCES [Exchanged]([Id]), 
+    FOREIGN KEY ([ProductId]) REFERENCES [Product]([Id])
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Rating] 
+(
+    Id INT IDENTITY(1,1) NOT NULL,
+    [User_Id] INT NOT NULL,
+    [Score] INT NOT NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    [DATE] DATETIME NOT NULL,
+    [Status] BIT NOT NULL, 
+	[Post_Id] INT NOT NULL,
+FOREIGN KEY ([User_Id]) REFERENCES [User] ([Id]),
+FOREIGN KEY ([Post_Id]) REFERENCES [Post] ([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Group] 
+(
+    [Id] INT IDENTITY(1,1) NOT NULL,
+    [PostId] INT NOT NULL,
+    [UserExchangeId] INT NOT NULL,
+    [CreatedDate] DATETIME NOT NULL,
+    [ModifiedDate] DATETIME NULL,
+FOREIGN KEY ([PostId]) REFERENCES [Post]([Id]),
+FOREIGN KEY ([UserExchangeId]) REFERENCES [User]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+CREATE TABLE [Message] 
+(
+    [Id] INT IDENTITY(1,1) NOT NULL,
+    [SenderId] INT NOT NULL,
+    [GroupId] INT NOT NULL,
+    [Content] NVARCHAR(MAX) NOT NULL,
+    [CreatedDate] DATETIME NOT NULL,
+    [ModifiedDate] DATETIME NULL,
+FOREIGN KEY ([SenderId]) REFERENCES [User]([Id]),
+FOREIGN KEY ([GroupId]) REFERENCES [Group]([Id]),
+PRIMARY KEY CLUSTERED ([Id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+GO
+
+USE [SWD392_DB]
+GO
+
+-- Insert data into Role table
+INSERT INTO [Role] ([Name], [Status]) VALUES
+('admin', 1),
+('user', 1),
+('staff', 1);
+
+-- Insert data into Category table
+INSERT INTO [Category] 
+([Name], [Description], [Status]) VALUES
+('Electronics', 'Electronic devices and gadgets', 1),
+('Books', 'All kinds of books', 1),
+('Clothing', 'Apparel and accessories', 1);
+
+-- Insert data into SubCategory table
+INSERT INTO [SubCategory] 
+([Category_Id], [Name], [Description], [Status]) VALUES
+(1, 'Mobile Phones', 'Smartphones and mobile phones', 1),
+(1, 'Laptops', 'Laptops and notebooks', 1),
+(2, 'Fiction', 'Fictional books and novels', 1),
+(2, 'Non-Fiction', 'Non-fictional books', 1),
+(3, 'Men', 'Men s clothing', 1),
+(3, 'Women', 'Women s clothing', 1);
+
+
+
+
+
+
+
+
